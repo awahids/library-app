@@ -25,8 +25,8 @@ const errorResponse = ({ error, statusCode = 500 } = {}) => {
     };
 };
 
-const sendSuccessResponse = (res, data, message = 'Success', statusCode = 200) => {
-    return res.status(statusCode).json(successResponse({ data, message, statusCode }));
+const sendSuccessResponse = (res, data, message = 'Success', isPaginate = false, statusCode = 200) => {
+    return res.status(statusCode).json(successResponse({ data, isPaginate, message, statusCode }));
 };
 
 const sendErrorResponse = (res, statusCode = 500, error = null) => {

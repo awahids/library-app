@@ -1,5 +1,6 @@
 const { prisma } = require('../configs/database');
 const { errorHandler } = require('../helpers/error.handler');
+const { paramPaginate, paginationResponse } = require('../helpers/pagination.helper');
 const validatorResult = require('../validator/validator-result');
 
 const createBook = async (req, res) => {
@@ -13,7 +14,7 @@ const createBook = async (req, res) => {
         throw errorHandler('Rak not found', 404);
     }
 
-    const buku = await prisma.book.create({
+    const book = await prisma.book.create({
         data: {
             title,
             author,
@@ -21,25 +22,57 @@ const createBook = async (req, res) => {
             stock,
             rakId: rak.id,
         },
+        select: {
+            id: true,
+            uuid: true,
+            title: true,
+            author: true,
+            publishedAt: true,
+            stock: true,
+            rak: {
+                select: {
+                    id: true,
+                    uuid: true,
+                    name: true,
+                }
+            }
+        }
     })
 
-    return buku;
+    return book;
 };
 
 const getBooks = async (req, res) => {
     // Run validations
     validatorResult(req, res);
 
-    const { page = 1, limit = 10 } = req.query;
-    const pageNumber = parseInt(page);
-    const take = parseInt(limit);
+    const { pageNumber, skip, take } = paramPaginate(req);
 
-    const skip = (pageNumber - 1) * take;
-    const books = await prisma.book.findMany({ skip, take });
+    const [books, total] = await prisma.$transaction([
+        prisma.book.findMany({
+            skip,
+            take,
+            select: {
+                id: true,
+                uuid: true,
+                title: true,
+                author: true,
+                publishedAt: true,
+                stock: true,
+                rak: {
+                    select: {
+                        id: true,
+                        uuid: true,
+                        name: true,
+                    }
+                }
+            }
+        }),
+        prisma.book.count(),
+    ]);
 
-    return books;
+    return paginationResponse(total, books, take, pageNumber, skip);
 };
-
 
 module.exports = {
     createBook,

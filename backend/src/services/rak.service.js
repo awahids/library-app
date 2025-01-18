@@ -1,5 +1,6 @@
 const { prisma } = require('../configs/database');
 const validatorResult = require('../validator/validator-result');
+const { paramPaginate, paginationResponse } = require('../helpers/pagination.helper');
 
 const createRak = async (req, res) => {
   const { name } = req.body;
@@ -10,6 +11,11 @@ const createRak = async (req, res) => {
   const rak = await prisma.rak.create({
     data: {
       name
+    },
+    select: {
+      id: true,
+      uuid: true,
+      name: true,
     }
   });
 
@@ -20,18 +26,23 @@ const getRaks = async (req, res) => {
   // Run validations
   validatorResult(req, res);
 
-  const { page = 1, limit = 10 } = req.query;
-  const pageNumber = parseInt(page);
+  const { pageNumber, skip, take } = paramPaginate(req);
 
-  const take = parseInt(limit);
-  const skip = (pageNumber - 1) * take;
+  const [raks, total] = await prisma.$transaction([
+    prisma.rak.findMany({
+      skip,
+      take,
+      select: {
+        id: true,
+        uuid: true,
+        name: true,
+      }
+    }),
 
-  const raks = await prisma.rak.findMany({
-    skip,
-    take,
-  });
+    prisma.rak.count(),
+  ])
 
-  return raks;
+  return paginationResponse(total, raks, take, pageNumber, skip);
 };
 
 module.exports = {

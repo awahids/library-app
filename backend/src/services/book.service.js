@@ -22,7 +22,6 @@ const createBook = async (req, res) => {
             rakId: rak.id,
         },
     })
-    console.log(buku)
 
     return buku;
 };

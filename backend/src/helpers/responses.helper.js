@@ -18,21 +18,19 @@ const successResponse = ({ data, isPaginate = false, message = 'success', status
 };
 
 const errorResponse = ({ error, statusCode = 500 } = {}) => {
-    throw new HttpException({
+    return {
         success: false,
         statusCode,
         error,
-    }, statusCode);
+    };
 };
 
-// Helper untuk mengirim respons sukses
 const sendSuccessResponse = (res, data, message = 'Success', statusCode = 200) => {
     return res.status(statusCode).json(successResponse({ data, message, statusCode }));
 };
 
-// Helper untuk mengirim respons kesalahan
-const sendErrorResponse = (res, message = any, statusCode = 500) => {
-    return res.status(statusCode).json(errorResponse({ message, statusCode }));
+const sendErrorResponse = (res, statusCode = 500, error = null) => {
+    return res.status(statusCode).json(errorResponse({ error, statusCode }));
 };
 
 module.exports = {

@@ -18,6 +18,9 @@ model Book {
   rak          Rak?           @relation(fields: [rakId], references: [id])
   transactions Transaction[]  @relation("BookTransactions")
   borrowHistories BorrowHistory[]
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @default(now())
+  deletedAt    DateTime?
 }
 
 model Student {
@@ -28,6 +31,9 @@ model Student {
   isActive        Boolean        @default(true)
   transactions    Transaction[]  @relation("StudentTransactions")
   borrowHistories BorrowHistory[]
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @default(now())
+  deletedAt       DateTime?
 }
 
 model Transaction {
@@ -41,6 +47,9 @@ model Transaction {
 
   student    Student   @relation("StudentTransactions", fields: [studentId], references: [id])
   book       Book      @relation("BookTransactions", fields: [bookId], references: [id])
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @default(now())
+  deletedAt  DateTime?
 }
 
 model Rak {
@@ -48,6 +57,9 @@ model Rak {
   uuid      String   @default(uuid()) @unique
   name      String   @unique
   books     Book[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  deletedAt DateTime?
 }
 
 model BorrowHistory {
@@ -60,4 +72,7 @@ model BorrowHistory {
 
   student    Student   @relation(fields: [studentId], references: [id])
   book       Book      @relation(fields: [bookId], references: [id])
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @default(now())
+  deletedAt  DateTime?
 }

@@ -1,0 +1,7 @@
+{
+  "scripts": {
+    "migrate": "cd backend && npx prisma migrate dev",
+    "start:be": "cd backend && npm run start",
+    "dev:be": "cd backend && npm run dev"
+  }
+}

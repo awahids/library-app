@@ -9,11 +9,11 @@ const create = async (req, res) => {
   try {
     const { name } = req.body;
 
-    const buku = await createRak({
+    const rak = await createRak({
       name
     });
 
-    return sendSuccessResponse(res, buku, 'Created', 201);
+    return sendSuccessResponse(res, rak, 'Created', 201);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

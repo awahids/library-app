@@ -2,6 +2,7 @@ const { prisma } = require('../configs/database');
 const { errorHandler } = require('../helpers/error.handler');
 const { paramPaginate, paginationResponse } = require('../helpers/pagination.helper');
 const validatorResult = require('../validator/validator-result');
+const { handleFormatWhere } = require('../helpers/where-format.helper');
 
 const createBook = async (req, res) => {
     const { title, author, publishedAt, stock, rackUuid } = req.body;
@@ -47,11 +48,13 @@ const getBooks = async (req, res) => {
     validatorResult(req, res);
 
     const { pageNumber, skip, take } = paramPaginate(req);
+    const filters = handleFormatWhere(req.body.filters)
 
     const [books, total] = await prisma.$transaction([
         prisma.book.findMany({
             skip,
             take,
+            where: filters,
             select: {
                 id: true,
                 uuid: true,
@@ -68,7 +71,10 @@ const getBooks = async (req, res) => {
                 }
             }
         }),
-        prisma.book.count(),
+
+        prisma.book.count({
+            where: filters,
+        }),
     ]);
 
     return paginationResponse(total, books, take, pageNumber, skip);

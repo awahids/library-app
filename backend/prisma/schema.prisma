@@ -1,0 +1,61 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Book {
+  id          Int       @id @default(autoincrement())
+  uuid        String    @default(uuid()) @unique
+  title       String
+  author      String
+  publishedAt DateTime?
+  stock       Int       @default(0) 
+  inventory   Inventory? @relation(fields: [inventoryId], references: [id])
+  inventoryId Int?
+  transactions Transaction[] 
+  borrowHistories BorrowHistory[] // Relasi ke BorrowHistory
+}
+
+model Student {
+  id        Int       @id @default(autoincrement())
+  uuid      String    @default(uuid()) @unique
+  nim       String    @unique
+  name      String
+  isActive  Boolean   @default(true) 
+  transactions Transaction[] 
+  borrowHistories BorrowHistory[] // Relasi ke BorrowHistory
+}
+
+model Transaction {
+  id          Int       @id @default(autoincrement())
+  uuid        String    @default(uuid()) @unique
+  studentId   Int
+  bookId      Int
+  borrowDate  DateTime  @default(now())
+  returnDate  DateTime?
+  duration    Int?      @default(14)
+  student     Student   @relation(fields: [studentId], references: [id])
+  book        Book      @relation(fields: [bookId], references: [id])
+}
+
+model Inventory {
+  id        Int       @id @default(autoincrement())
+  uuid      String    @default(uuid()) @unique
+  location  String    
+  books     Book[]    
+}
+
+model BorrowHistory {
+  id          Int       @id @default(autoincrement())
+  uuid        String    @default(uuid()) @unique
+  studentId   Int
+  bookId      Int
+  borrowDate  DateTime  @default(now())
+  returnDate  DateTime?
+  student     Student   @relation(fields: [studentId], references: [id])
+  book        Book      @relation(fields: [bookId], references: [id])
+}

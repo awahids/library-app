@@ -1,6 +1,7 @@
 const { prisma } = require('../configs/database');
 const validatorResult = require('../validator/validator-result');
 const { paramPaginate, paginationResponse } = require('../helpers/pagination.helper');
+const { handleFormatWhere } = require('../helpers/where-format.helper');
 
 const createRak = async (req, res) => {
   const { name } = req.body;
@@ -28,10 +29,13 @@ const getRaks = async (req, res) => {
 
   const { pageNumber, skip, take } = paramPaginate(req);
 
+  const filters = handleFormatWhere(req.body.filters)
+
   const [raks, total] = await prisma.$transaction([
     prisma.rak.findMany({
       skip,
       take,
+      where: filters,
       select: {
         id: true,
         uuid: true,
@@ -39,7 +43,9 @@ const getRaks = async (req, res) => {
       }
     }),
 
-    prisma.rak.count(),
+    prisma.rak.count({
+      where: filters
+    }),
   ])
 
   return paginationResponse(total, raks, take, pageNumber, skip);

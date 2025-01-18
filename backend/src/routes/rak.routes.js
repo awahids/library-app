@@ -5,6 +5,6 @@ const { validateBody } = require('../validator/rak.validator');
 const { validateQuery } = require('../validator/common.validator');
 
 router.post('/rak', validateBody, create);
-router.get('/raks', validateQuery, getAll);
+router.post('/raks', validateQuery, getAll);
 
 module.exports = router;

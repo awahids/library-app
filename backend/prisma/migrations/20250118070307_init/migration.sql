@@ -6,7 +6,7 @@ CREATE TABLE "Book" (
     "author" TEXT NOT NULL,
     "publishedAt" TIMESTAMP(3),
     "stock" INTEGER NOT NULL DEFAULT 0,
-    "inventoryId" INTEGER,
+    "rakId" INTEGER,
 
     CONSTRAINT "Book_pkey" PRIMARY KEY ("id")
 );
@@ -30,18 +30,18 @@ CREATE TABLE "Transaction" (
     "bookId" INTEGER NOT NULL,
     "borrowDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "returnDate" TIMESTAMP(3),
-    "duration" INTEGER DEFAULT 14,
+    "duration" INTEGER NOT NULL DEFAULT 14,
 
     CONSTRAINT "Transaction_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "Inventory" (
+CREATE TABLE "Rak" (
     "id" SERIAL NOT NULL,
     "uuid" TEXT NOT NULL,
-    "location" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
 
-    CONSTRAINT "Inventory_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Rak_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -69,13 +69,16 @@ CREATE UNIQUE INDEX "Student_nim_key" ON "Student"("nim");
 CREATE UNIQUE INDEX "Transaction_uuid_key" ON "Transaction"("uuid");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Inventory_uuid_key" ON "Inventory"("uuid");
+CREATE UNIQUE INDEX "Rak_uuid_key" ON "Rak"("uuid");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Rak_name_key" ON "Rak"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "BorrowHistory_uuid_key" ON "BorrowHistory"("uuid");
 
 -- AddForeignKey
-ALTER TABLE "Book" ADD CONSTRAINT "Book_inventoryId_fkey" FOREIGN KEY ("inventoryId") REFERENCES "Inventory"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Book" ADD CONSTRAINT "Book_rakId_fkey" FOREIGN KEY ("rakId") REFERENCES "Rak"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Transaction" ADD CONSTRAINT "Transaction_studentId_fkey" FOREIGN KEY ("studentId") REFERENCES "Student"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

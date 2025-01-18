@@ -17,12 +17,11 @@ const successResponse = ({ data, isPaginate = false, message = 'success', status
     };
 };
 
-const errorResponse = ({ message = 'internal server error', statusCode = 500, data } = {}) => {
+const errorResponse = ({ error, statusCode = 500 } = {}) => {
     throw new HttpException({
         success: false,
         statusCode,
-        message,
-        data
+        error,
     }, statusCode);
 };
 
@@ -32,7 +31,7 @@ const sendSuccessResponse = (res, data, message = 'Success', statusCode = 200) =
 };
 
 // Helper untuk mengirim respons kesalahan
-const sendErrorResponse = (res, message = 'Internal Server Error', statusCode = 500) => {
+const sendErrorResponse = (res, message = any, statusCode = 500) => {
     return res.status(statusCode).json(errorResponse({ message, statusCode }));
 };
 

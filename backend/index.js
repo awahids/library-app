@@ -1,6 +1,4 @@
-require('module-alias/register');
-
-const server = require('@/configs/server');
+const server = require('./src/configs/server');
 
 const DEFAULT_PORT = 3000;
 const PORT = process.env.PORT || DEFAULT_PORT;

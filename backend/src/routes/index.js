@@ -1,13 +1,13 @@
 var express = require('express');
 var router = express.Router();
-var inventoriesRouter = require('./inventory.routes');
-const { sendSuccessResponse } = require('@/helpers/responses.helper');
+const { sendSuccessResponse } = require('../helpers/responses.helper');
+const raksRouter = require('./rak.routes');
 
-router.get('/', function(req, res, next) {
-  return sendSuccessResponse(res, null, 'Welcome to the API', 200);
+router.get('/', function (req, res, next) {
+  return sendSuccessResponse(res, Date('YYYY-MM-DD'), 'Welcome to the API', 200);
 });
 
-// inventory routes
-router.use('/', inventoriesRouter);
+// rak routes
+router.use('/', raksRouter);
 
 module.exports = router;

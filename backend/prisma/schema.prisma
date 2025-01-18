@@ -8,54 +8,56 @@ datasource db {
 }
 
 model Book {
-  id          Int       @id @default(autoincrement())
-  uuid        String    @default(uuid()) @unique
-  title       String
-  author      String
-  publishedAt DateTime?
-  stock       Int       @default(0) 
-  inventory   Inventory? @relation(fields: [inventoryId], references: [id])
-  inventoryId Int?
-  transactions Transaction[] 
-  borrowHistories BorrowHistory[] // Relasi ke BorrowHistory
+  id           Int            @id @default(autoincrement())
+  uuid         String         @default(uuid()) @unique
+  title        String
+  author       String
+  publishedAt  DateTime?
+  stock        Int            @default(0)
+  rakId        Int?
+  rak          Rak?           @relation(fields: [rakId], references: [id])
+  transactions Transaction[]  @relation("BookTransactions")
+  borrowHistories BorrowHistory[]
 }
 
 model Student {
-  id        Int       @id @default(autoincrement())
-  uuid      String    @default(uuid()) @unique
-  nim       String    @unique
-  name      String
-  isActive  Boolean   @default(true) 
-  transactions Transaction[] 
-  borrowHistories BorrowHistory[] // Relasi ke BorrowHistory
+  id              Int            @id @default(autoincrement())
+  uuid            String         @default(uuid()) @unique
+  nim             String         @unique
+  name            String
+  isActive        Boolean        @default(true)
+  transactions    Transaction[]  @relation("StudentTransactions")
+  borrowHistories BorrowHistory[]
 }
 
 model Transaction {
-  id          Int       @id @default(autoincrement())
-  uuid        String    @default(uuid()) @unique
-  studentId   Int
-  bookId      Int
-  borrowDate  DateTime  @default(now())
-  returnDate  DateTime?
-  duration    Int?      @default(14)
-  student     Student   @relation(fields: [studentId], references: [id])
-  book        Book      @relation(fields: [bookId], references: [id])
+  id         Int       @id @default(autoincrement())
+  uuid       String    @default(uuid()) @unique
+  studentId  Int
+  bookId     Int
+  borrowDate DateTime  @default(now())
+  returnDate DateTime?
+  duration   Int       @default(14)
+
+  student    Student   @relation("StudentTransactions", fields: [studentId], references: [id])
+  book       Book      @relation("BookTransactions", fields: [bookId], references: [id])
 }
 
-model Inventory {
-  id        Int       @id @default(autoincrement())
-  uuid      String    @default(uuid()) @unique
-  location  String    
-  books     Book[]    
+model Rak {
+  id        Int      @id @default(autoincrement())
+  uuid      String   @default(uuid()) @unique
+  name      String   @unique
+  books     Book[]
 }
 
 model BorrowHistory {
-  id          Int       @id @default(autoincrement())
-  uuid        String    @default(uuid()) @unique
-  studentId   Int
-  bookId      Int
-  borrowDate  DateTime  @default(now())
-  returnDate  DateTime?
-  student     Student   @relation(fields: [studentId], references: [id])
-  book        Book      @relation(fields: [bookId], references: [id])
+  id         Int       @id @default(autoincrement())
+  uuid       String    @default(uuid()) @unique
+  studentId  Int
+  bookId     Int
+  borrowDate DateTime  @default(now())
+  returnDate DateTime?
+
+  student    Student   @relation(fields: [studentId], references: [id])
+  book       Book      @relation(fields: [bookId], references: [id])
 }

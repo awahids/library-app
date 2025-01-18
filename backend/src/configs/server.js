@@ -2,10 +2,10 @@ const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-const routes = require('@routes/index'); 
-const { connectDatabase } = require('./database'); 
+const { connectDatabase } = require('./database');
+const routes = require('../routes/index');
 
-const server = (port) => { 
+const server = (port) => {
     const app = express();
 
     // Middleware
@@ -20,7 +20,7 @@ const server = (port) => {
         app.use('/api/v1', routes);
 
         // Start the server
-        app.listen(port, () => { 
+        app.listen(port, () => {
             console.log(`Server is running on http://localhost:${port}`);
         });
     }).catch((err) => {
@@ -28,7 +28,7 @@ const server = (port) => {
         process.exit(1);
     });
 
-    return app; 
+    return app;
 };
 
 module.exports = server; 

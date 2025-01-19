@@ -21,7 +21,7 @@ const createBook = async (req, res) => {
             title,
             author,
             publishedAt: new Date(publishedAt),
-            stock,
+            stock: parseInt(stock),
             rakId: rak.id,
         },
         select: {

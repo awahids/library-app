@@ -17,7 +17,6 @@ model Book {
   rakId        Int?
   rak          Rak?           @relation(fields: [rakId], references: [id])
   transactions Transaction[]  @relation("BookTransactions")
-  borrowHistories BorrowHistory[]
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @default(now())
   deletedAt    DateTime?
@@ -30,7 +29,6 @@ model Student {
   name            String
   isActive        Boolean        @default(true)
   transactions    Transaction[]  @relation("StudentTransactions")
-  borrowHistories BorrowHistory[]
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @default(now())
   deletedAt       DateTime?
@@ -60,19 +58,4 @@ model Rak {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
   deletedAt DateTime?
-}
-
-model BorrowHistory {
-  id         Int       @id @default(autoincrement())
-  uuid       String    @default(uuid()) @unique
-  studentId  Int
-  bookId     Int
-  borrowDate DateTime  @default(now())
-  returnDate DateTime?
-
-  student    Student   @relation(fields: [studentId], references: [id])
-  book       Book      @relation(fields: [bookId], references: [id])
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @default(now())
-  deletedAt  DateTime?
 }

@@ -1,15 +1,18 @@
 'use client';
 import { useState, useEffect } from 'react';
-import AddBookModal from './BookForm';
+import AddStudentModal from './StudentForm';
 
-const BookList = () => {
-  const [books, setBooks] = useState([]);
+const StudentList = () => {
+  const [students, setStudents] = useState([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [titleFilter, setTitleFilter] = useState('');
-  const [authorFilter, setAuthorFilter] = useState('');
+  const [filters, setFilters] = useState({
+    name: '',
+    nim: '',
+    isActive: '',
+  });
   const [perPage, setPerPage] = useState(5);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -17,46 +20,53 @@ const BookList = () => {
   const closeModal = () => setIsModalOpen(false);
 
   useEffect(() => {
-    const fetchBooks = async () => {
+    const fetchStudents = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`http://localhost:3000/api/v1/books?page=${page}&per_page=${perPage}`, {
+        const response = await fetch(`http://localhost:3000/api/v1/students?page=${page}&per_page=${perPage}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            filters: [
-              titleFilter ? { field: 'title', value: titleFilter, type: 'like' } : null,
-              authorFilter ? { field: 'author', value: authorFilter, type: 'like' } : null,
-            ].filter(Boolean),
+            filters: Object.keys(filters)
+              .filter((key) => filters[key] !== '')
+              .map((key) => {
+                if (key === 'isActive') {
+                  const value = filters[key] === 'true';
+                  return { field: key, value };
+                }
+                if (key === 'name') {
+                  return { field: key, value: filters[key], type: 'like' };
+                }
+                return { field: key, value: filters[key], type: 'like' };
+              }),
           }),
         });
 
         if (!response.ok) {
-          throw new Error('Failed to fetch books');
+          throw new Error('Failed to fetch students');
         }
 
         const result = await response.json();
-        setBooks(result.data);
+        setStudents(result.data);
         setTotalPages(Math.ceil(result.meta.pagination.total / perPage));
       } catch (error) {
-        setError('Failed to fetch books');
+        setError('Failed to fetch students');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchBooks();
-  }, [page, titleFilter, authorFilter, perPage]);
+    fetchStudents();
+  }, [page, filters, perPage]);
 
-  const handleFilterChange = (e, type) => {
+  const handleFilterChange = (e, field) => {
     const value = e.target.value;
-    if (type === 'title') {
-      setTitleFilter(value);
-    } else if (type === 'author') {
-      setAuthorFilter(value);
-    }
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      [field]: value,
+    }));
     setPage(1);
   };
 
@@ -69,8 +79,8 @@ const BookList = () => {
     setPage(1);
   };
 
-  const handleAddBook = () => {
-    alert('Navigating to Add Book form');
+  const handleAddStudent = () => {
+    alert('Navigating to Add Student form');
   };
 
   if (loading) {
@@ -85,34 +95,43 @@ const BookList = () => {
     <div className="overflow-x-auto px-4 py-6 text-gray-800 bg-gray-100 min-h-screen">
       {/* Header Section */}
       <div className="mb-4 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-700">Book List</h1>
+        <h1 className="text-2xl font-bold text-gray-700">Student List</h1>
         <button
           onClick={openModal}
           className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
         >
-          Add Book
+          Add Student
         </button>
 
-        {/* Komponen Modal */}
-        <AddBookModal isOpen={isModalOpen} onClose={closeModal} />
+        {/* Modal Component */}
+        <AddStudentModal isOpen={isModalOpen} onClose={closeModal} />
       </div>
 
       {/* Filter Section */}
       <div className="mb-4 flex space-x-4 mt-10">
-        <input
-          type="text"
-          placeholder="Filter by title..."
-          value={titleFilter}
-          onChange={(e) => handleFilterChange(e, 'title')}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-        />
-        <input
-          type="text"
-          placeholder="Filter by author..."
-          value={authorFilter}
-          onChange={(e) => handleFilterChange(e, 'author')}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-        />
+        {Object.keys(filters).map((field) => (
+          <div key={field} className="flex flex-col">
+            {field === 'isActive' ? (
+              <select
+                value={filters[field]}
+                onChange={(e) => handleFilterChange(e, field)}
+                className="w-32 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+              >
+                <option value="">All Status</option>
+                <option value="true">Active</option>
+                <option value="false">Inactive</option>
+              </select>
+            ) : (
+              <input
+                type="text"
+                placeholder={`Filter by ${field}`}
+                value={filters[field]}
+                onChange={(e) => handleFilterChange(e, field)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+              />
+            )}
+          </div>
+        ))}
         <select
           value={perPage}
           onChange={handlePerPageChange}
@@ -130,24 +149,27 @@ const BookList = () => {
         <table className="min-w-full table-auto bg-white border border-gray-300 rounded-lg shadow-md">
           <thead>
             <tr>
-              <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">Title</th>
-              <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">Author</th>
-              <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">Published Date</th>
-              <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">Stock</th>
-              <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">Rack</th>
-              <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">Actions</th>
+              <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">Nama</th>
+              <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">NIM</th>
+              <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">Status</th>
+              <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">Action</th>
             </tr>
           </thead>
           <tbody>
-            {books.map((book) => (
-              <tr key={book.uuid} className="border-b hover:bg-gray-100">
-                <td className="px-4 py-2 text-sm text-gray-700">{book.title}</td>
-                <td className="px-4 py-2 text-sm text-gray-700">{book.author}</td>
+            {students.map((student) => (
+              <tr key={student.uuid} className="border-b hover:bg-gray-100">
+                <td className="px-4 py-2 text-sm text-gray-700">{student.name}</td>
+                <td className="px-4 py-2 text-sm text-gray-700">{student.nim}</td>
                 <td className="px-4 py-2 text-sm text-gray-700">
-                  {new Date(book.publishedAt).toLocaleDateString()}
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs font-semibold ${student.isActive
+                      ? 'bg-green-100 text-green-800'
+                      : 'bg-red-100 text-red-800'
+                      }`}
+                  >
+                    {student.isActive ? 'Aktif' : 'Tidak Aktif'}
+                  </span>
                 </td>
-                <td className="px-4 py-2 text-sm text-gray-700">{book.stock}</td>
-                <td className="px-4 py-2 text-sm text-gray-700">{book.rak.name}</td>
                 <td className="px-4 py-2 text-sm text-gray-700">
                   <button className="px-3 py-1 text-blue-600 hover:underline">Edit</button>
                   <button className="px-3 py-1 text-red-600 hover:underline">Delete</button>
@@ -184,4 +206,4 @@ const BookList = () => {
   );
 };
 
-export default BookList;
+export default StudentList;

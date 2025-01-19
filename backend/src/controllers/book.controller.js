@@ -22,7 +22,7 @@ const getAll = async (req, res) => {
     }
 };
 
-const crateBorrowBook = async (req, res) => {
+const createBorrowBook = async (req, res) => {
     try {
         const transaction = await borrowBooks(req, res);
 
@@ -36,5 +36,5 @@ const crateBorrowBook = async (req, res) => {
 module.exports = {
     create,
     getAll,
-    crateBorrowBook
+    createBorrowBook
 };

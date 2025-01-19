@@ -55,13 +55,7 @@ const getBooks = async (req, res) => {
         prisma.book.findMany({
             skip,
             take,
-            where: {
-                stock: {
-                    not: 0
-                },
-                ...filters
-            },
-
+            where: filters,
             select: {
                 id: true,
                 uuid: true,

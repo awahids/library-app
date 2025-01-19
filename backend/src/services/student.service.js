@@ -11,7 +11,10 @@ const createStudent = async (req, res) => {
   } = req.body;
 
   // validation
-  validatorResult(req, res);
+  const validator = validatorResult(req, res);
+  if (validator) {
+    return next(validator);
+  }
 
   const student = await prisma.student.create({
     data: {

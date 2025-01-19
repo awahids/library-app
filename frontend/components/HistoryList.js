@@ -122,13 +122,11 @@ const HistoryList = () => {
         [field]: formattedDate,
       }));
     } else if (field === 'title') {
-      // Untuk filter judul buku, kita hanya mengubah field title tanpa mengubah uuid
       setFilters((prevFilters) => ({
         ...prevFilters,
         [field]: value,
       }));
     } else {
-      // Untuk filter lainnya, tetap mengubah nilai filter sesuai field
       setFilters((prevFilters) => ({
         ...prevFilters,
         [field]: value,
@@ -142,8 +140,8 @@ const HistoryList = () => {
     const bookUuid = e.target.value;
     setFilters((prevFilters) => ({
       ...prevFilters,
-      uuid: bookUuid, // Menggunakan uuid bukunya
-      title: '', // Hapus title ketika memilih buku dengan uuid
+      uuid: bookUuid,
+      title: '',
     }));
   };
 

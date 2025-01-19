@@ -76,7 +76,7 @@ const BorrowBookModal = ({ isOpen, onClose }) => {
     // Ensure the duration is a number
     const validBooks = selectedBooks.map((book) => ({
       ...book,
-      duration: Number(book.duration), // Make sure it's a number
+      duration: Number(book.duration),
     }));
 
     const payload = {

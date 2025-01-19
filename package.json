@@ -1,6 +1,10 @@
 {
   "scripts": {
-    "migrate": "cd backend && npx prisma migrate dev",
+    "migrate:dev": "cd backend && npm run migrate:dev",
+    "migrate:deploy": "cd backend && npm run migrate:deploy",
+    "migrate:reset": "cd backend && npm run migrate:reset",
+    "migrate:status": "cd backend && npm run migrate:status",
+    "seed": "cd backend && npx prisma db seed",
     "start:be": "cd backend && npm run start",
     "dev:be": "cd backend && npm run dev"
   }

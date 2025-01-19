@@ -46,11 +46,7 @@ const Sidebar = () => {
             <UsersIcon className="h-6 w-6" />
             {isOpen && <span>Students</span>}
           </Link>
-          <Link href="/transactions" onClick={handleMenuClick} className="flex items-center space-x-4 text-gray-300 hover:text-white">
-            <CreditCardIcon className="h-6 w-6" />
-            {isOpen && <span>Transactions</span>}
-          </Link>
-          <Link href="/history" onClick={handleMenuClick} className="flex items-center space-x-4 text-gray-300 hover:text-white">
+          <Link href="/transaction-histories" onClick={handleMenuClick} className="flex items-center space-x-4 text-gray-300 hover:text-white">
             <ClockIcon className="h-6 w-6" />
             {isOpen && <span>Borrow History</span>}
           </Link>

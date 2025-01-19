@@ -1,5 +1,5 @@
 'use client';
-import Sidebar from './Sidebar'; // pastikan pathnya benar
+import Sidebar from './Sidebar';
 
 const Layout = ({ children }) => {
   return (
@@ -8,7 +8,7 @@ const Layout = ({ children }) => {
       <Sidebar />
 
       {/* Main Content Area */}
-      <div className="flex-1 p-6 bg-gray-100">
+      <div className="flex-1 p-6 bg-gray-100 text-slate-800">
         {children}
       </div>
     </div>

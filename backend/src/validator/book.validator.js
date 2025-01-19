@@ -21,6 +21,26 @@ const validateBody = [
     .isString().withMessage('Rak harus berupa string')
 ];
 
+const validateBookBorrow = [
+  body('studentUuid')
+    .notEmpty().withMessage('Siswa wajib diisi')
+    .isString().withMessage('Siswa harus berupa string'),
+
+  body('data')
+    .isArray({ min: 1 }).withMessage('Data buku harus berupa array minimal 1 item')
+    .custom((items) => {
+      for (const item of items) {
+        if (!item.bookUuid) throw new Error('bookUuid wajib diisi');
+        if (typeof item.bookUuid !== 'string') throw new Error('bookUuid harus berupa string');
+        if (!item.duration) throw new Error('duration wajib diisi');
+        if (typeof item.duration !== 'number') throw new Error('duration harus berupa angka');
+        if (item.duration < 1 || item.duration > 14) throw new Error('Durasi minimal 1, maksimal 14');
+      }
+      return true;
+    }),
+];
+
 module.exports = {
-  validateBody
+  validateBody,
+  validateBookBorrow
 };

@@ -5,7 +5,11 @@
   "scripts": {
     "start": "node ./bin/www",
     "dev": "nodemon index",
-    "migrate": "npx prisma migrate dev"
+    "migrate:dev": "npx prisma migrate dev",
+    "migrate:deploy": "npx prisma migrate deploy",
+    "migrate:reset": "npx prisma migrate reset",
+    "migrate:status": "npx prisma migrate status",
+    "seed": "npx prisma db seed"
   },
   "dependencies": {
     "@prisma/client": "^6.2.1",
@@ -25,5 +29,8 @@
   "devDependencies": {
     "nodemon": "^3.1.9",
     "prisma": "^6.2.1"
+  },
+  "prisma": {
+    "seed": "node prisma/seed.js"
   }
 }

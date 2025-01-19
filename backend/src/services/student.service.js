@@ -66,8 +66,23 @@ const getStudentByNim = async (nim) => {
   return student;
 }
 
+const getStudentByUuid = async (uuid) => {
+  const student = await prisma.student.findUnique({
+    where: { uuid },
+    select: {
+      id: true,
+      uuid: true,
+      name: true,
+      nim: true,
+      isActive: true,
+    }
+  });
+  return student;
+}
+
 module.exports = {
   createStudent,
   getStudentByNim,
-  getStudents
+  getStudents,
+  getStudentByUuid
 }

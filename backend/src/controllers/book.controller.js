@@ -1,5 +1,5 @@
 const { sendErrorResponse, sendSuccessResponse } = require('../helpers/responses.helper');
-const { createBook, getBooks } = require('../services/book.service');
+const { createBook, getBooks, borrowBooks } = require('../services/book.service');
 
 const create = async (req, res) => {
     try {
@@ -22,7 +22,19 @@ const getAll = async (req, res) => {
     }
 };
 
+const crateBorrowBook = async (req, res) => {
+    try {
+        const transaction = await borrowBooks(req, res);
+
+        return sendSuccessResponse(res, transaction, 'Book borrowed successfully', false, 201);
+    } catch (error) {
+        console.log('Error in create:', error);
+        return sendErrorResponse(res, error.statusCode, error.message);
+    }
+};
+
 module.exports = {
     create,
-    getAll
+    getAll,
+    crateBorrowBook
 };

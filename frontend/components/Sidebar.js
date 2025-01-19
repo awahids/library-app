@@ -10,44 +10,49 @@ const Sidebar = () => {
     setIsOpen(!isOpen);
   };
 
+  const handleMenuClick = () => {
+    setIsOpen(false);
+  };
+
   return (
-    <div className={`transition-all duration-300 ${isOpen ? 'w-64' : 'w-16'} bg-gray-800 text-white h-full`}>
+    <div className={`transition-all duration-200 ${isOpen ? 'w-64' : 'w-20'} bg-gray-800 text-white h-full fixed`}>
       {/* Toggle Sidebar Button */}
-      <button
-        className="lg:hidden p-2 absolute top-4 left-4 text-white"
-        onClick={toggleSidebar}
-      >
-        {isOpen ? <XMarkIcon className="h-6 w-6" /> : <Bars3Icon className="h-6 w-6" />}
-      </button>
+      <div className="absolute top-4 left-4">
+        <button
+          onClick={toggleSidebar}
+          className="flex items-center justify-center w-10 h-10 bg-gray-700 rounded-full shadow-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-gray-500 transition-all"
+        >
+          {isOpen ? (
+            <XMarkIcon className="h-4 w-4 text-white transition-transform transform rotate-0 duration-300" />
+          ) : (
+            <Bars3Icon className="h-4 w-4 text-white transition-transform transform rotate-0 duration-300" />
+          )}
+        </button>
+      </div>
 
       {/* Sidebar Content */}
-      <div className="flex flex-col p-4 mt-10">
-        {/* Sidebar Header */}
-        {/* <div className="text-2xl font-bold mb-6 mt-10">
-          <h2>{isOpen ? 'Admin Panel' : ''}</h2>
-        </div> */}
-
+      <div className="flex flex-col p-4 mt-16">
         {/* Menu Items */}
-        <nav className="flex flex-col space-y-4">
-          <Link href="/" className="flex items-center space-x-2 text-gray-300 hover:text-white">
-            <HomeIcon className="w-5 h-5" />
-            <span>{isOpen ? 'Dashboard' : <HomeIcon />}</span>
+        <nav className={`flex flex-col space-y-4 mt-6 ${isOpen ? 'items-start' : 'items-center'}`}>
+          <Link href="/" onClick={handleMenuClick} className="flex items-center space-x-4 text-gray-300 hover:text-white">
+            <HomeIcon className="w-6 h-6" />
+            {isOpen && <span>Dashboard</span>}
           </Link>
-          <Link href="/books" className="flex items-center space-x-2 text-gray-300 hover:text-white">
-            <BookOpenIcon className="h-5 w-5" />
-            <span>{isOpen ? 'Books' : <BookOpenIcon />}</span>
+          <Link href="/books" onClick={handleMenuClick} className="flex items-center space-x-4 text-gray-300 hover:text-white">
+            <BookOpenIcon className="h-6 w-6" />
+            {isOpen && <span>Books</span>}
           </Link>
-          <Link href="/students" className="flex items-center space-x-2 text-gray-300 hover:text-white">
-            <UsersIcon className="h-5 w-5" />
-            <span>{isOpen ? 'Students' : <UsersIcon />}</span>
+          <Link href="/students" onClick={handleMenuClick} className="flex items-center space-x-4 text-gray-300 hover:text-white">
+            <UsersIcon className="h-6 w-6" />
+            {isOpen && <span>Students</span>}
           </Link>
-          <Link href="/transactions" className="flex items-center space-x-2 text-gray-300 hover:text-white">
-            <CreditCardIcon className="h-5 w-5" />
-            <span>{isOpen ? 'Transactions' : <CreditCardIcon />}</span>
+          <Link href="/transactions" onClick={handleMenuClick} className="flex items-center space-x-4 text-gray-300 hover:text-white">
+            <CreditCardIcon className="h-6 w-6" />
+            {isOpen && <span>Transactions</span>}
           </Link>
-          <Link href="/history" className="flex items-center space-x-2 text-gray-300 hover:text-white">
-            <ClockIcon className="h-5 w-5" />
-            <span>{isOpen ? 'Borrow History' : <ClockIcon />}</span>
+          <Link href="/history" onClick={handleMenuClick} className="flex items-center space-x-4 text-gray-300 hover:text-white">
+            <ClockIcon className="h-6 w-6" />
+            {isOpen && <span>Borrow History</span>}
           </Link>
         </nav>
       </div>
